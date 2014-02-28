@@ -1,4 +1,4 @@
-(defproject com.lemonodor/xio "0.1.0"
+(defproject com.lemonodor/xio "0.2.0"
   :description "Extra IO functions."
   :url "http://github.com/clj-xio"
   :license {:name "Eclipse Public License"
