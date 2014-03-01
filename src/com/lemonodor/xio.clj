@@ -167,10 +167,11 @@
 (defn slurp
   "Reads the file named by f into a string and returns it."
   [f & opts]
-  (let [opts (concat opts (list :buffer-size (buffer-size opts)))
+  (let [opts (concat (list :buffer-size (buffer-size opts)) opts)
+        opt-map (apply hash-map opts)
         ^Reader r (apply io/reader f opts)
         ^StringBuilder sb (StringBuilder.)
-        buf-size (buffer-size opts)
+        buf-size (buffer-size opt-map)
         ^"[C" buffer (make-array (Character/TYPE) buf-size)]
     (loop [total 0
            nread (.read r buffer 0 buf-size)]
@@ -178,7 +179,7 @@
         (str sb)
         (let [total (+ total nread)]
           (.append sb (String. buffer 0 nread))
-          (when-let [callback (:callback opts)]
+          (when-let [callback (:callback opt-map)]
             (callback nread total))
           (recur total (.read r buffer 0 buf-size)))))))
 
@@ -189,7 +190,8 @@
   supported arguments."
   ([f & opts]
      (let [output (java.io.ByteArrayOutputStream.)]
-       (apply copy (apply io/input-stream f opts) output opts)
+       (with-open [^InputStream input (apply io/input-stream f opts)]
+         (apply copy input output opts))
        (.toByteArray output))))
 
 
@@ -197,12 +199,13 @@
   "Opposite of slurp.  Opens f with writer, writes content, then
   closes f. Options passed to clojure.java.io/writer."
   [f content & opts]
-  (let [opts (concat opts (list :buffer-size (buffer-size opts)))]
+  (let [opts (concat (list :buffer-size (buffer-size opts)) opts)
+        opt-map (apply hash-map opts)]
     (with-open [^java.io.Writer w (apply io/writer f opts)]
-      (if-let [callback (:callback opts)]
+      (if-let [callback (:callback opt-map)]
         (let [^String content (str content)
               len (count content)
-              buf-size (buffer-size opts)]
+              buf-size (buffer-size opt-map)]
           (loop [off 0
                  total 0]
             (when (< off len)
@@ -230,6 +233,23 @@
             (callback num-bytes total))
           (recur (int (+ off num-bytes)) (int total)))))))
 
+(defmethod do-binary-spit clojure.lang.PersistentVector
+  [^OutputStream output-stream content opts]
+  (let [buf-size (buffer-size opts)
+        len (count content)
+        buf (byte-array buf-size)]
+    (loop [off 0
+           total 0]
+      (when (< off len)
+        (let [num-bytes (min buf-size (- len off))
+              total (+ total num-bytes)]
+          (dotimes [i num-bytes]
+            (aset-byte buf i (nth content (+ off i))))
+          (.write output-stream buf 0 num-bytes)
+          (when-let [callback (:callback opts)]
+            (callback num-bytes total))
+          (recur (int (+ off num-bytes)) (int total)))))))
+
 (defmethod do-binary-spit :default
   [^OutputStream output-stream content opts]
   (doseq [^int b content]
@@ -237,6 +257,6 @@
 
 
 (defn binary-spit [f content & opts]
-  (let [opts (concat opts (list :buffer-size (buffer-size opts)))]
+  (let [opts (concat (list :buffer-size (buffer-size opts)) opts)]
     (with-open [^OutputStream os (apply io/output-stream f opts)]
-      (do-binary-spit os content opts))))
+      (do-binary-spit os content (apply hash-map opts)))))
