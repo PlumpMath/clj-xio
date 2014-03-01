@@ -1,6 +1,9 @@
 # com.lemonodor/xio
 
-Extra IO functions.
+[![Build Status](https://travis-ci.org/wiseman/clj-xio.png?branch=master)](https://travis-ci.org/wiseman/clj-xio)
+
+Extra IO functions.  Optimized `copy`, `slurp`, `spit`, `binary-slurp`
+and `binary-spit`.  Each supports a `:callback` option.
 
 ## Usage
 
