@@ -4,6 +4,19 @@ Extra IO functions.
 
 ## Usage
 
+## Running tests
+
+To run unit tests:
+
+```
+$ lein test
+```
+
+To run benchmarks:
+
+```
+$ lein test :benchmark
+```
 
 ## License
 
