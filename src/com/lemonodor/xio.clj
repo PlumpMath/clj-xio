@@ -20,12 +20,13 @@
       :private true}
  char-array-type (class (make-array Character/TYPE 0)))
 
+(def default-buffer-size 16384)
 
 (defn- ^String encoding [opts]
   (or (:encoding opts) "UTF-8"))
 
 (defn- buffer-size [opts]
-  (or (:buffer-size opts) 1024))
+  (or (:buffer-size opts) default-buffer-size))
 
 
 (defmulti
@@ -163,6 +164,25 @@
   (do-copy input output (when opts (apply hash-map opts))))
 
 
+(defn slurp
+  "Reads the file named by f into a string and returns it."
+  [f & opts]
+  (let [opts (concat opts (list :buffer-size (buffer-size opts)))
+        ^Reader r (apply io/reader f opts)
+        ^StringBuilder sb (StringBuilder.)
+        buf-size (buffer-size opts)
+        ^"[C" buffer (make-array (Character/TYPE) buf-size)]
+    (loop [total 0
+           nread (.read r buffer 0 buf-size)]
+      (if (neg? nread)
+        (str sb)
+        (let [total (+ total nread)]
+          (.append sb (String. buffer 0 nread))
+          (when-let [callback (:callback opts)]
+            (callback nread total))
+          (recur total (.read r buffer 0 buf-size)))))))
+
+
 (defn binary-slurp
   "Opens an input stream on f and reads all its contents, returning a
   string.  See clojure.java.io/input-stream for a complete list of
@@ -171,3 +191,52 @@
      (let [output (java.io.ByteArrayOutputStream.)]
        (apply copy (apply io/input-stream f opts) output opts)
        (.toByteArray output))))
+
+
+(defn spit
+  "Opposite of slurp.  Opens f with writer, writes content, then
+  closes f. Options passed to clojure.java.io/writer."
+  [f content & opts]
+  (let [opts (concat opts (list :buffer-size (buffer-size opts)))]
+    (with-open [^java.io.Writer w (apply io/writer f opts)]
+      (if-let [callback (:callback opts)]
+        (let [^String content (str content)
+              len (count content)
+              buf-size (buffer-size opts)]
+          (loop [off 0
+                 total 0]
+            (when (< off len)
+              (let [num-chars (min buf-size (- len off))
+                    total (+ total num-chars)]
+                (.write w content (int off) (int num-chars))
+                (callback num-chars total)
+                (recur (int (+ off num-chars)) (int total))))))
+        (.write w (str content))))))
+
+
+(defmulti do-binary-spit (fn [output-stream content opts] (type content)))
+
+(defmethod do-binary-spit byte-array-type
+  [^OutputStream output-stream ^"[B" content opts]
+  (let [buf-size (buffer-size opts)
+        len (count content)]
+    (loop [off 0
+           total 0]
+      (when (< off len)
+        (let [num-bytes (min buf-size (- len off))
+              total (+ total num-bytes)]
+          (.write output-stream content off num-bytes)
+          (when-let [callback (:callback opts)]
+            (callback num-bytes total))
+          (recur (int (+ off num-bytes)) (int total)))))))
+
+(defmethod do-binary-spit :default
+  [^OutputStream output-stream content opts]
+  (doseq [^int b content]
+    (.write output-stream b)))
+
+
+(defn binary-spit [f content & opts]
+  (let [opts (concat opts (list :buffer-size (buffer-size opts)))]
+    (with-open [^OutputStream os (apply io/output-stream f opts)]
+      (do-binary-spit os content opts))))
