@@ -163,49 +163,49 @@
      result]))
 
 
-(deftest ^:benchmark timing-tests
-  (let [f (fs/temp-file "slurp.dat")
-        n (* 1024 1024 1)
-        content (apply str (repeat n \A))]
-    (.deleteOnExit f)
-    (println "Data size is" n "bytes/chars")
-    (testing "core/spit timing"
-      (let [[time _] (time-fn #(spit f content))]
-        (println "core/spit took" time "s"))
-      (is (= (fs/size f) n)))
-    (testing "xio/spit timing"
-      (let [[time _] (time-fn #(xio/spit f content))]
-        (println "xio/spit took" time "s"))
-      (is (= (fs/size f) n)))
-    (testing "xio/spit with callback timing"
-      (let [[time _] (time-fn #(xio/spit f content :callback (fn [_ __])))]
-        (println "xio/spit with callback took" time "s"))
-      (is (= (fs/size f) n)))
-    (testing "xio/binary-spit [byte array] timing"
-      (let [bin-content (.getBytes content)
-            [time _] (time-fn #(xio/binary-spit f bin-content))]
-        (println "xio/binary-spit [byte array] took" time "s")
-        (is (= (fs/size f) n))))
-    (testing "xio/binary-spit [vector] timing"
-      (let [bin-content (vec (.getBytes content))
-            [time _] (time-fn #(xio/binary-spit f bin-content))]
-        (println "xio/binary-spit [vector] took" time "s")
-        (is (= (fs/size f) n))))
-    (testing "xio/binary-spit [byte array] with callback timing"
-      (let [bin-content (.getBytes content)
-            [time _] (time-fn #(xio/binary-spit f bin-content
-                                                :callback (fn [_ __])))]
-        (println "xio/binary-spit [byte array] with callback took" time "s"))
-      (is (= (fs/size f) n)))
-    (testing "core/slurp timing"
-      (let [[time data] (time-fn #(slurp f))]
-        (is (= (count data) n))
-        (println "core/slurp took" time "s")))
-    (testing "xio/slurp timing"
-      (let [[time data] (time-fn #(xio/slurp f))]
-        (is (= (count data) n))
-        (println "xio/slurp took" time "s")))
-    (testing "xio/binary-slurp timing"
-      (let [[time data] (time-fn #(xio/binary-slurp f))]
-        (is (= (count data) n))
-        (println "xio/binary-slurp took" time "s")))))
+;; (deftest ^:benchmark timing-tests
+;;   (let [f (fs/temp-file "slurp.dat")
+;;         n (* 1024 1024 1)
+;;         content (apply str (repeat n \A))]
+;;     (.deleteOnExit f)
+;;     (println "Data size is" n "bytes/chars")
+;;     (testing "core/spit timing"
+;;       (let [[time _] (time-fn #(spit f content))]
+;;         (println "core/spit took" time "s"))
+;;       (is (= (fs/size f) n)))
+;;     (testing "xio/spit timing"
+;;       (let [[time _] (time-fn #(xio/spit f content))]
+;;         (println "xio/spit took" time "s"))
+;;       (is (= (fs/size f) n)))
+;;     (testing "xio/spit with callback timing"
+;;       (let [[time _] (time-fn #(xio/spit f content :callback (fn [_ __])))]
+;;         (println "xio/spit with callback took" time "s"))
+;;       (is (= (fs/size f) n)))
+;;     (testing "xio/binary-spit [byte array] timing"
+;;       (let [bin-content (.getBytes content)
+;;             [time _] (time-fn #(xio/binary-spit f bin-content))]
+;;         (println "xio/binary-spit [byte array] took" time "s")
+;;         (is (= (fs/size f) n))))
+;;     (testing "xio/binary-spit [vector] timing"
+;;       (let [bin-content (vec (.getBytes content))
+;;             [time _] (time-fn #(xio/binary-spit f bin-content))]
+;;         (println "xio/binary-spit [vector] took" time "s")
+;;         (is (= (fs/size f) n))))
+;;     (testing "xio/binary-spit [byte array] with callback timing"
+;;       (let [bin-content (.getBytes content)
+;;             [time _] (time-fn #(xio/binary-spit f bin-content
+;;                                                 :callback (fn [_ __])))]
+;;         (println "xio/binary-spit [byte array] with callback took" time "s"))
+;;       (is (= (fs/size f) n)))
+;;     (testing "core/slurp timing"
+;;       (let [[time data] (time-fn #(slurp f))]
+;;         (is (= (count data) n))
+;;         (println "core/slurp took" time "s")))
+;;     (testing "xio/slurp timing"
+;;       (let [[time data] (time-fn #(xio/slurp f))]
+;;         (is (= (count data) n))
+;;         (println "xio/slurp took" time "s")))
+;;     (testing "xio/binary-slurp timing"
+;;       (let [[time data] (time-fn #(xio/binary-slurp f))]
+;;         (is (= (count data) n))
+;;         (println "xio/binary-slurp took" time "s")))))
