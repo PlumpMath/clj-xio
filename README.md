@@ -1,6 +1,6 @@
 # com.lemonodor/xio
 
-[![Build Status](https://travis-ci.org/wiseman/clj-xio.png?branch=master)](https://travis-ci.org/wiseman/clj-xio)
+[![Build Status](https://travis-ci.org/wiseman/clj-xio.png?branch=master)](https://travis-ci.org/wiseman/clj-xio) [![Coverage Status](https://coveralls.io/repos/wiseman/clj-xio/badge.png?branch=master)](https://coveralls.io/r/wiseman/clj-xio?branch=master)
 
 Extra IO functions for Clojure.
 
