@@ -4,37 +4,27 @@
 
 Extra IO functions for Clojure.
 
-`copy`
 
-Like `core/copy` but supports the `:callback` option.
+## copy
 
-`slurp`
-
-Like `core/slurp` but is buffered and supports the `:callback` option.
-2.9x faster than `core/slurp` when reading a 100 KB file, 3.4x faster
-when reading a 1 MB file.
-
-`spit`
-
-Like `core/spit` but is buffered and supports the `:callback` option.
+`xio/copy` is like `core/copy` but supports the `:callback` option.
 
 
-`binary-slurp`
+## slurp
 
-`binary-spit`
+`xio/slurp` is like `core/slurp` but is buffered and supports the
+`:callback` option.  2.9x faster than `core/slurp` when reading a 100
+KB file, 3.4x faster when reading a 1 MB file.
+
+## spit
+
+`xio/spit` is like `core/spit` but is buffered and supports the
+`:callback` option.
 
 
-| `copy`         | Like `core/split` but Supports :callback. |
-| `slurp`        |
-| `spit`         |
-| `binary-slurp` |
-| `binary-spit`  |
+## binary-slurp
 
-
-.  Optimized `copy`, `slurp`, `spit`, `binary-slurp`
-and `binary-spit`.  Each supports a `:callback` option.
-
-## Usage
+## binary-spit
 
 ## Running tests
 
