@@ -1,4 +1,5 @@
 (ns com.lemonodor.xio
+  (:refer-clojure :exclude [slurp spit])
   (:require [clojure.java.io :as io])
   (:import (java.io ByteArrayInputStream CharArrayReader File
                     FileInputStream FileOutputStream InputStream
@@ -11,8 +12,7 @@
 
 (def
     ^{:doc "Type object for a Java primitive byte array."
-      :private true
-      }
+      :private true}
  byte-array-type (class (make-array Byte/TYPE 0)))
 
 (def
