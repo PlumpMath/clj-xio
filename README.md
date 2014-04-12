@@ -1,11 +1,30 @@
 # com.lemonodor/xio
 
-[![Build Status](https://travis-ci.org/wiseman/clj-xio.png?branch=master)](https://travis-ci.org/wiseman/clj-xio)
+[![Build Status](https://travis-ci.org/wiseman/clj-xio.png?branch=master)](https://travis-ci.org/wiseman/clj-xio) [![Coverage Status](https://coveralls.io/repos/wiseman/clj-xio/badge.png?branch=master)](https://coveralls.io/r/wiseman/clj-xio?branch=master)
 
-Extra IO functions.  Optimized `copy`, `slurp`, `spit`, `binary-slurp`
-and `binary-spit`.  Each supports a `:callback` option.
+Extra IO functions for Clojure.
 
-## Usage
+
+## copy
+
+`xio/copy` is like `core/copy` but supports the `:callback` option.
+
+
+## slurp
+
+`xio/slurp` is like `core/slurp` but is buffered and supports the
+`:callback` option.  2.9x faster than `core/slurp` when reading a 100
+KB file, 3.4x faster when reading a 1 MB file.
+
+## spit
+
+`xio/spit` is like `core/spit` but is buffered and supports the
+`:callback` option.
+
+
+## binary-slurp
+
+## binary-spit
 
 ## Running tests
 
