@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/wiseman/clj-xio.png?branch=master)](https://travis-ci.org/wiseman/clj-xio) [![Coverage Status](https://coveralls.io/repos/wiseman/clj-xio/badge.png?branch=master)](https://coveralls.io/r/wiseman/clj-xio?branch=master)
 
 ```
-[com.lemonodor/xio "0.2.1"]
+[com.lemonodor/xio "0.2.2"]
 ```
 
 Extra IO functions for Clojure.
