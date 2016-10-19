@@ -11,14 +11,14 @@
 
 
 (def
-    ^{:doc "Type object for a Java primitive byte array."
-      :private true}
- byte-array-type (class (make-array Byte/TYPE 0)))
+  ^{:doc "Type object for a Java primitive byte array."
+    :private true}
+  byte-array-type (class (make-array Byte/TYPE 0)))
 
 (def
-    ^{:doc "Type object for a Java primitive char array."
-      :private true}
- char-array-type (class (make-array Character/TYPE 0)))
+  ^{:doc "Type object for a Java primitive char array."
+    :private true}
+  char-array-type (class (make-array Character/TYPE 0)))
 
 (def default-buffer-size 16384)
 
@@ -165,7 +165,10 @@
 
 
 (defn slurp
-  "Reads the file named by f into a string and returns it."
+  "Reads the file named by `f` into a string and returns it.
+
+  See the documentation for the `copy` function for information on
+  supported options."
   [f & opts]
   (let [opts (concat (list :buffer-size (buffer-size opts)) opts)
         opt-map (apply hash-map opts)
@@ -185,9 +188,9 @@
 
 
 (defn binary-slurp
-  "Opens an input stream on f and reads all its contents, returning a
-  string.  See clojure.java.io/input-stream for a complete list of
-  supported arguments."
+  "Opens an input stream on `f` and reads all its contents, returning
+  a byte array. See `clojure.java.io/input-stream` for a complete list
+  of supported arguments."
   ([f & opts]
      (let [output (java.io.ByteArrayOutputStream.)]
        (with-open [^InputStream input (apply io/input-stream f opts)]
@@ -196,8 +199,8 @@
 
 
 (defn spit
-  "Opposite of slurp.  Opens f with writer, writes content, then
-  closes f. Options passed to clojure.java.io/writer."
+  "Opposite of slurp. Opens `f` with writer, writes content, then
+  closes `f`. Options are passed to `clojure.java.io/writer`."
   [f content & opts]
   (let [opts (concat (list :buffer-size (buffer-size opts)) opts)
         opt-map (apply hash-map opts)]

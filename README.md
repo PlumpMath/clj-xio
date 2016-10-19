@@ -6,27 +6,30 @@
 [com.lemonodor/xio "0.2.2"]
 ```
 
-Extra IO functions for Clojure.
+Extra IO functions for Clojure. I wrote these soon after I learned
+clojure so they're probably an incorrect implementation of a bad idea.
 
 
 ## copy
 
-`xio/copy` is like `core/copy` but supports the `:callback` option.
+`xio/copy` is like `clojure.core/copy` but supports the `:callback` option.
 
 
 ## slurp
 
-`xio/slurp` is like `core/slurp` but is buffered and supports the
-`:callback` option.  2.9x faster than `core/slurp` when reading a 100
-KB file, 3.4x faster when reading a 1 MB file.
+`xio/slurp` is like `clojure.core/slurp` but is buffered and supports
+the `:callback` option. 2.9x faster than `clojure.core/slurp` when
+reading a 100 KB file, 3.4x faster when reading a 1 MB file.
 
 ## spit
 
-`xio/spit` is like `core/spit` but is buffered and supports the
-`:callback` option.
+`xio/spit` is like `clojure.core/spit` but is buffered and supports
+the `:callback` option.
 
 
 ## binary-slurp
+
+Like `clojure.core/slurp` but returns a byte array.
 
 ## binary-spit
 
@@ -46,7 +49,7 @@ $ lein test :benchmark
 
 ## License
 
-Copyright © 2014 John Wiseman
+Copyright © 2014,2016 John Wiseman
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
